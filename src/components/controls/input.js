@@ -4,7 +4,7 @@ import {TextField} from "@material-ui/core";
 
 const Input = props => {
 
-    const {name, label, value, onChange} = props;
+    const {name, label, value, error = null, onChange, ...other} = props;
 
     return (
         <TextField
@@ -12,7 +12,10 @@ const Input = props => {
             label={label}
             name={name}
             onChange={onChange}
-            value={value}/>
+            value={value}
+            {...other}
+            {...(error && {error: true, helperText: error})}
+        />
     );
 }
 

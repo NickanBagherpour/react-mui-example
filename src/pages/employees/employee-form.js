@@ -27,36 +27,72 @@ const initialFValues = {
 
 const EmployeeForm = () => {
 
-    const {values, setValues, handleInputChange} = useForm(initialFValues);
+    const {
+        values,
+        setValues,
+        errors,
+        setErrors,
+        handleInputChange,
+        resetForm,
+    } = useForm(initialFValues);
+
+    const validate = () => {
+        let temp = {};
+        temp.fullName = values.fullName ? "" : "This field is required.";
+        temp.email = (/$^|.+@.+..+/).test(values.email) ? "" : "Email is not valid.";
+        temp.mobile = values.mobile.length > 9 ? "" : "Minimum 10 numbers required.";
+        temp.departmentId = values.departmentId.length !== 0 ? "" : "This field is required.";
+
+        setErrors({
+            ...temp
+        });
+
+        return Object.values(temp).every(x => x === "")
+    }
+
+
+    const handleSubmit = e => {
+        e.preventDefault();
+
+        if (validate()) {
+            window.alert('testing...');
+        }
+    };
 
     return (
-        <Form>
+        <Form onSubmit={handleSubmit}>
             <Grid container>
                 <Grid item xs={6}>
                     <Controls.Input
                         label="Full Name"
                         name="fullName"
                         onChange={handleInputChange}
-                        value={values.fullName}/>
+                        value={values.fullName}
+                        error={errors.fullName}
+                    />
 
                     <Controls.Input
                         label="Email"
                         name="email"
                         onChange={handleInputChange}
-                        value={values.email}/>
+                        value={values.email}
+                        error={errors.email}
+                    />
 
                     <Controls.Input
                         label="Mobile"
                         name="mobile"
                         onChange={handleInputChange}
-                        value={values.mobile}/>
+                        value={values.mobile}
+                        error={errors.mobile}
+                    />
 
                     <Controls.Input
                         label="City"
                         name="city"
                         onChange={handleInputChange}
-                        value={values.city}/>
-
+                        value={values.city}
+                    />
 
                 </Grid>
 
@@ -75,6 +111,7 @@ const EmployeeForm = () => {
                         value={values.departmentId}
                         onChange={handleInputChange}
                         options={employeeService.getDepartmentCollection()}
+                        error={errors.departmentId}
                     />
 
                     <Controls.DatePicker
@@ -95,9 +132,11 @@ const EmployeeForm = () => {
                         <Controls.Button
                             type="submit"
                             text="Submit"/>
+
                         <Controls.Button
                             text="Reset"
                             color="default"
+                            onClick={resetForm}
                         />
                     </div>
 
